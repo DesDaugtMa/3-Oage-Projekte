@@ -20,3 +20,10 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.ownContainer {
+    padding: .5rem;
+    margin: .2rem;
+    border: 1px solid #bfbdb6;
+    border-radius: 7px;
+}

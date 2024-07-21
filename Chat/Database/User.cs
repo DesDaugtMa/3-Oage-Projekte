@@ -20,6 +20,8 @@ namespace Chat.Database
         [MaxLength(300)]
         public string Description { get; set; }
 
+        public ICollection<Message>? Messages { get; set; }
+
         public void GenerateHashedPassword(string passwordToHash)
         {
             var hasher = new PasswordHasher<IdentityUser>();

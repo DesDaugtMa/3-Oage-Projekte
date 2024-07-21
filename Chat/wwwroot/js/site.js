@@ -1,4 +1,10 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿$(document).ready(function () {
+    var inputTexts = document.getElementsByClassName("messageContent");
 
-// Write your JavaScript code.
+    //iterate through all found post-contents
+    for (var i = 0; i < inputTexts.length; i++) {
+        var innerHTML = inputTexts[i].innerHTML;
+        innerHTML = innerHTML.replace(/(^|\W)#([a-zA-z0-9]{3,16})/g, "$1<span style='color: orange;'>#$2</span>");
+        inputTexts[i].innerHTML = innerHTML;
+    }
+});
