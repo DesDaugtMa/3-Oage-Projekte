@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
+using System.ComponentModel.DataAnnotations;
 
 namespace Chat.Database
 {
@@ -17,5 +19,19 @@ namespace Chat.Database
 
         [MaxLength(300)]
         public string Description { get; set; }
+
+        public void GenerateHashedPassword(string passwordToHash)
+        {
+            var hasher = new PasswordHasher<IdentityUser>();
+            var identityUser = new IdentityUser(EMailAddress);
+            Password = hasher.HashPassword(identityUser, passwordToHash);
+        }
+
+        public bool CheckPassword(string passwordToCheck)
+        {
+            var hasher = new PasswordHasher<IdentityUser>();
+            var identityUser = new IdentityUser(EMailAddress);
+            return PasswordVerificationResult.Failed != hasher.VerifyHashedPassword(identityUser, Password, passwordToCheck);
+        }
     }
 }
