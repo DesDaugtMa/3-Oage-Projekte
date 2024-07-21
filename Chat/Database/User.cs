@@ -20,7 +20,11 @@ namespace Chat.Database
         [MaxLength(300)]
         public string Description { get; set; }
 
+        public DateTime MemberSince { get; set; }
+
         public ICollection<Message>? Messages { get; set; }
+
+        public ICollection<Like>? Likes { get; set; }
 
         public void GenerateHashedPassword(string passwordToHash)
         {

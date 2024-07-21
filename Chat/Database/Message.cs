@@ -19,5 +19,13 @@ namespace Chat.Database
         public DateTime PostedAt { get; set; }
 
         public ICollection<Tag>? Tags { get; set; } = new List<Tag>();
+
+        public ICollection<Like>? Likes { get; set; }
+
+        [NotMapped]
+        public int NumberOfLikes { get; set; }
+
+        [NotMapped]
+        public bool DidCurrentUserLike { get; set; }
     }
 }

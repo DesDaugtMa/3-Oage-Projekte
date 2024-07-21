@@ -33,6 +33,19 @@ namespace Chat.Controllers
             else
                 indexMessages.AlreadySentMessages = _context.Messages.Include(x => x.User).OrderByDescending(x => x.PostedAt).Take(5).ToList();
 
+            foreach (var message in indexMessages.AlreadySentMessages)
+            {
+                message.NumberOfLikes = _context.Likes.Where(x => x.MessageId == message.Id).Count();
+
+                if (User.FindFirstValue(ClaimTypes.NameIdentifier) is null)
+                    continue;
+
+                if (_context.Likes.Where(x => x.MessageId == message.Id).Any(x => x.UserId == Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)))
+                    message.DidCurrentUserLike = true;
+                else
+                    message.DidCurrentUserLike = false;
+            }
+
             List<Message> messagesLast24Hours = _context.Messages.Where(x => x.PostedAt >= DateTime.Now.AddHours(-24)).Include(x => x.Tags).ToList();
             
             List<string> topHashtags = new List<string>();
@@ -100,6 +113,26 @@ namespace Chat.Controllers
 
                 _context.SaveChanges();
             }
+
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> LikeOrDislike(int messageId)
+        {
+            Like like = _context.Likes.Where(x => x.MessageId == messageId && x.UserId == Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)).FirstOrDefault()!;
+
+            if (like is null)
+            {
+                _context.Likes.Add(new Like { MessageId = messageId, UserId = Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!) });
+            } else
+            {
+                _context.Likes.Remove(like);
+            }
+
+            _context.SaveChanges();
 
             return RedirectToAction("Index", "Home");
         }

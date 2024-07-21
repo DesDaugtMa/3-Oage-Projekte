@@ -49,7 +49,8 @@ namespace Chat.Controllers
                 {
                     EMailAddress = userToRegister.Email,
                     Username = userToRegister.Username,
-                    Description = userToRegister.Description
+                    Description = userToRegister.Description,
+                    MemberSince = DateTime.Now
                 };
 
                 newUser.GenerateHashedPassword(userToRegister.Password!);
@@ -122,6 +123,24 @@ namespace Chat.Controllers
         {
             Task.Run(async () => await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme)).Wait();
             return Redirect("~/");
+        }
+
+        public IActionResult Profile(string username)
+        {
+            User user = _context.Users.Where(x => x.Username == username).First();
+
+            Profile userProfile = new Profile
+            {
+                LastMessages = _context.Messages.Where(x => x.User == user).OrderByDescending(x => x.PostedAt).Take(5).ToList(),
+                Username = user.Username,
+                Description = user.Description,
+                MemberSince = user.MemberSince,
+                CountOfMessages = _context.Messages.Where(x => x.User == user).Count(),
+                LikesGiven = 1,
+                LikesGoten = 1
+            };
+
+            return View(userProfile);
         }
     }
 }

@@ -1,0 +1,73 @@
+﻿@model Chat.Models.Profile
+
+@{
+    ViewData["Title"] = "Profil";
+}
+
+<div class="row">
+    <div class="col-sm-6">
+
+        <a asp-action="Index" asp-controller="Home" class="btn btn-secondary">Zurück</a>
+
+        <div class="row">
+            <div class="col-6 text-center p-3" style="text-overflow: ellipsis">
+                <small>Benutzername</small>
+                <br />
+                <b>@Model.Username</b>
+            </div>
+            <div class="col-6 text-center p-3" style="text-overflow: ellipsis">
+                <small>Registriert seit</small>
+                <br />
+                <b>@Model.MemberSince.ToString("dd.MM.yyyy")</b>
+            </div>
+            <div class="col-12 text-center p-3" style="text-overflow: clip;">
+                <small>Beschreibung</small>
+                <br />
+                <b>@Model.Description</b>
+            </div>
+            <div class="col-6 text-center p-3" style="text-overflow: ellipsis">
+                <small>Nachrichten verfasst</small>
+                <br />
+                <b>@Model.CountOfMessages</b>
+            </div>
+            <div class="col-6 text-center p-3" style="text-overflow: ellipsis">
+                <small>Likes vergeben</small>
+                <br />
+                <b>@Model.LikesGiven</b>
+            </div>
+            <div class="col-6 text-center p-3" style="text-overflow: ellipsis">
+                <small>Likes erhalten</small>
+                <br />
+                <b>@Model.LikesGoten</b>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        @foreach (var item in Model.LastMessages)
+        {
+            <div class="row ownContainer">
+
+                <div class="col-9">
+                    <small>
+                        <b>
+                            @item.User.Username
+                        </b>
+                    </small>
+                </div>
+
+                <div class="col-3">
+                    <small class="text-secondary">
+                        @item.PostedAt
+                    </small>
+                </div>
+
+                <div class="col-12">
+                    <p class="messageContent">
+                        @item.Text
+                    </p>
+                </div>
+
+            </div>
+        }
+    </div>
+</div>
