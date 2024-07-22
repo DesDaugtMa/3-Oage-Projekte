@@ -1,0 +1,58 @@
+﻿@model Finanzrechner.Database.Transaction
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+
+<h4>Möchten Sie diesen Eintrag wirklich löschen?</h4>
+<hr />
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Amount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TimeStamp)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+            <tr>
+                <td style="background-color: @Model.Category.ColorCode"></td>
+                <td>
+                    @Html.DisplayFor(model => model.Category.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => model.Description)
+                </td>
+                <td>
+                    @if (@Model.IsIntake)
+                    {
+                        <span class="text-success">+ €@Model.Amount</span>
+                    }
+                    else
+                    {
+                        <span class="text-danger">- €@Model.Amount</span>
+                    }
+                </td>
+                <td>
+                    <span>@Model.TimeStamp.ToString("dd.MM.yyyy")</span>
+                </td>
+            </tr>
+    </tbody>
+</table>
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Löschen" class="btn btn-danger" /> 
+        <a asp-action="Index" class="btn btn-outline-secondary">Zurück</a>
+    </form>
+</div>

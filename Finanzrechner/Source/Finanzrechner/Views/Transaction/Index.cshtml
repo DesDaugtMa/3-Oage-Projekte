@@ -1,0 +1,60 @@
+﻿@model IEnumerable<Finanzrechner.Database.Transaction>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h4>Übersicht</h4>
+<hr />
+<p>
+    <a asp-action="Create" class="btn btn-success">Eintrag hinzufügen</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Amount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TimeStamp)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td style="background-color: @item.Category.ColorCode"></td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @if (item.IsIntake)
+                {
+                    <span class="text-success">+ €@item.Amount</span>
+                } else
+                {
+                    <span class="text-danger">- €@item.Amount</span>
+                }
+            </td>
+            <td>
+                <span>@item.TimeStamp.ToString("dd.MM.yyyy")</span>
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-secondary"><i class="bi bi-pen"></i></a>
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger"><i class="bi bi-trash"></i></a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
