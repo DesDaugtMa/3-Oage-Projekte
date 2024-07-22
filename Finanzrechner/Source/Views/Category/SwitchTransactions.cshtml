@@ -1,0 +1,22 @@
+﻿@model Finanzrechner.Models.SwitchTransactionsModel
+
+<h4>Einträge verschieben</h4>
+<p>Wählen Sie eine Kategorie aus, in die die Enträge von @Model.Category.Name verschóben werden sollen.</p>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="PostSwitchTransactions">
+            <input type="hidden" asp-for="FromCategoryId" value="@Model.Category.Id"/>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ToCategoryId" class="control-label"></label>
+                <select asp-for="ToCategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
+            </div>
+            <hr />
+            <div class="form-group">
+                <input type="submit" value="Verschieben" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-outline-danger">Abbrechen</a>
+            </div>
+        </form>
+    </div>
+</div>

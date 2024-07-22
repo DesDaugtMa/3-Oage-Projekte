@@ -19,9 +19,9 @@ namespace Finanzrechner.Controllers
         }
 
         // GET: Transaction
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? amountEntriesShown)
         {
-            var databaseContext = _context.Transactions.Include(t => t.Category);
+            var databaseContext = _context.Transactions.Include(t => t.Category).OrderByDescending(x => x.TimeStamp);
             return View(await databaseContext.ToListAsync());
         }
 

@@ -1,18 +1,15 @@
 ﻿@model Finanzrechner.Database.Category
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Create";
 }
 
-<h1>Edit</h1>
-
-<h4>Category</h4>
+<h4>Kategorie erstellen</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -23,15 +20,13 @@
                 <input asp-for="ColorCode" class="form-control" type="color"/>
                 <span asp-validation-for="ColorCode" class="text-danger"></span>
             </div>
+            <hr />
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Erstellen" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-outline-secondary">Zurück</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

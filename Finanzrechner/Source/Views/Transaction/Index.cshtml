@@ -3,12 +3,35 @@
 @{
     ViewData["Title"] = "Index";
 }
+<div class="row">
+    <div class="col-sm-3">
+        <h4>Alle Einträge</h4>
+        <hr />
+        <p>
+            <a asp-action="Create" class="btn btn-success">Eintrag hinzufügen</a>
+        </p>
+    </div>
+    <div class="col-sm-9">
+        <h4>Filter</h4>
+        <hr />
+        <form asp-controller="Transaction" asp-action="Index">
+            <label class="control-label">Einträge anzeigen</label> <br />
 
-<h4>Übersicht</h4>
-<hr />
-<p>
-    <a asp-action="Create" class="btn btn-success">Eintrag hinzufügen</a>
-</p>
+            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                <input type="radio" class="btn-check" name="amountEntriesShown" id="btnradio1" autocomplete="off" value="10">
+                <label class="btn btn-outline-secondary" for="btnradio1">10</label>
+
+                <input type="radio" class="btn-check" name="amountEntriesShown" id="btnradio2" autocomplete="off" value="50">
+                <label class="btn btn-outline-secondary" for="btnradio2">50</label>
+
+                <input type="radio" class="btn-check" name="amountEntriesShown" id="btnradio3" autocomplete="off" value="Alle">
+                <label class="btn btn-outline-secondary" for="btnradio3">Alle</label>
+            </div>
+
+            <input class="btn btn-primary" type="submit" value="Filtern" />
+        </form>
+    </div>
+</div>
 <table class="table">
     <thead>
         <tr>

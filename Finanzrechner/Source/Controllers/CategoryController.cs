@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Finanzrechner.Database;
+using Finanzrechner.Models;
 
 namespace Finanzrechner.Controllers
 {
@@ -24,28 +25,36 @@ namespace Finanzrechner.Controllers
             return View(await _context.Categories.ToListAsync());
         }
 
-        // GET: Category/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
-            {
-                return NotFound();
-            }
-
-            return View(category);
-        }
-
         // GET: Category/Create
         public IActionResult Create()
         {
             return View();
+        }
+
+        public IActionResult SwitchTransactions(int categoryId)
+        {
+            ViewData["CategoryId"] = new SelectList(_context.Categories.Where(x => x.Id != categoryId), "Id", "Name");
+            return View(new SwitchTransactionsModel { Category = _context.Categories.Where(x => x.Id == categoryId).First(), FromCategoryId = 0, ToCategoryId = 0 });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult PostSwitchTransactions(SwitchTransactionsModel model)
+        {
+            List<Transaction> transactionsFromOldCategory = _context.Transactions.Where(x => x.CategoryId == model.FromCategoryId).ToList();
+
+            foreach (Transaction transaction in transactionsFromOldCategory)
+            {
+                transaction.CategoryId = model.ToCategoryId;
+            }
+
+            _context.SaveChanges();
+
+            _context.Categories.Remove(_context.Categories.Where(x => x.Id == model.FromCategoryId).First());
+
+            _context.SaveChanges();
+
+            return RedirectToAction("Index");
         }
 
         // POST: Category/Create
@@ -130,6 +139,13 @@ namespace Finanzrechner.Controllers
                 return NotFound();
             }
 
+            ViewBag.CanDelete = false;
+
+            if (_context.Categories.Count() > 1)
+            {
+                ViewBag.CanDelete = true;
+            }
+
             return View(category);
         }
 
@@ -138,14 +154,7 @@ namespace Finanzrechner.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
-            if (category != null)
-            {
-                _context.Categories.Remove(category);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("SwitchTransactions", "Category", new { CategoryId = id });
         }
 
         private bool CategoryExists(int id)

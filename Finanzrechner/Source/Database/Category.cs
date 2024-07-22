@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Finanzrechner.Database
 {
@@ -11,6 +12,7 @@ namespace Finanzrechner.Database
         public string Name { get; set; }
 
         [MaxLength(7)]
+        [DisplayName("Farbe")]
         public string ColorCode { get; set; }
 
         public ICollection<Transaction>? Transactions { get; set; }

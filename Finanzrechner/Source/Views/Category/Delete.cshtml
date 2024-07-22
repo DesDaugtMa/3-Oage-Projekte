@@ -1,0 +1,40 @@
+﻿@model Finanzrechner.Database.Category
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h4>Möchten Sie diesen Eintrag wirklich löschen?</h4>
+<hr />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+            <tr>
+                <td style="background-color: @Model.ColorCode"></td>
+                <td>
+                    @Model.Name
+                </td>
+            </tr>
+    </tbody>
+</table>
+<hr />
+<form asp-action="Delete">
+    <input type="hidden" asp-for="Id" />
+    @if (ViewBag.CanDelete)
+    {
+        <input type="submit" value="Löschen" class="btn btn-danger" />
+    }
+    else
+    {
+        <span class="text-danger">Um diese Kategorie löschen zu können, muss mindestens eine andere Kategorie vorhanden sein.</span>
+    }
+    <a asp-action="Index" class="btn btn-outline-secondary">Zurück</a>
+</form>
