@@ -128,6 +128,14 @@ namespace Chat.Controllers
         public IActionResult Profile(string username)
         {
             User user = _context.Users.Where(x => x.Username == username).First();
+            List<Message> messagesOfUser = _context.Messages.Where(x => x.User == user).ToList();
+
+            int likesGoten = 0;
+
+            foreach (Message message in messagesOfUser)
+            {
+                likesGoten += _context.Likes.Where(x => x.MessageId == message.Id).Count();
+            }
 
             Profile userProfile = new Profile
             {
@@ -136,8 +144,8 @@ namespace Chat.Controllers
                 Description = user.Description,
                 MemberSince = user.MemberSince,
                 CountOfMessages = _context.Messages.Where(x => x.User == user).Count(),
-                LikesGiven = 1,
-                LikesGoten = 1
+                LikesGiven = _context.Likes.Where(x => x.User == user).Count(),
+                LikesGoten = likesGoten
             };
 
             return View(userProfile);
