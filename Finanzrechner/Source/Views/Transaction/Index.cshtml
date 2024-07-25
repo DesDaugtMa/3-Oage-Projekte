@@ -15,20 +15,112 @@
         <h4>Filter</h4>
         <hr />
         <form asp-controller="Transaction" asp-action="Index">
-            <label class="control-label">Einträge anzeigen</label> <br />
+            <div class="row">
+                <div class="col-sm-3">
+                    <label class="control-label">Einträge anzeigen</label> <br />
+                    <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                        @if (ViewBag.SelectedAmountFilter is not null && ViewBag.SelectedAmountFilter == 1)
+                        {
+                            <input type="radio" class="btn-check" name="amountEntriesShown" id="btnradio1" autocomplete="off" value="10" checked>
+                        }
+                        else
+                        {
+                            <input type="radio" class="btn-check" name="amountEntriesShown" id="btnradio1" autocomplete="off" value="10">
+                        }
+                        <label class="btn btn-outline-secondary" for="btnradio1">10</label>
 
-            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-                <input type="radio" class="btn-check" name="amountEntriesShown" id="btnradio1" autocomplete="off" value="10">
-                <label class="btn btn-outline-secondary" for="btnradio1">10</label>
+                        @if (ViewBag.SelectedAmountFilter is not null && ViewBag.SelectedAmountFilter == 2)
+                        {
+                            <input type="radio" class="btn-check" name="amountEntriesShown" id="btnradio2" autocomplete="off" value="50" checked>
+                        }
+                        else
+                        {
+                            <input type="radio" class="btn-check" name="amountEntriesShown" id="btnradio2" autocomplete="off" value="50">
+                        }
+                        <label class="btn btn-outline-secondary" for="btnradio2">50</label>
 
-                <input type="radio" class="btn-check" name="amountEntriesShown" id="btnradio2" autocomplete="off" value="50">
-                <label class="btn btn-outline-secondary" for="btnradio2">50</label>
+                        @if (ViewBag.SelectedAmountFilter is null || ViewBag.SelectedAmountFilter == 3)
+                        {
+                            <input type="radio" class="btn-check" name="amountEntriesShown" id="btnradio3" autocomplete="off" value="Alle" checked>
+                        }
+                        else
+                        {
+                            <input type="radio" class="btn-check" name="amountEntriesShown" id="btnradio3" autocomplete="off" value="Alle">
+                        }
+                        <label class="btn btn-outline-secondary" for="btnradio3">Alle</label>
+                    </div>
+                </div>
 
-                <input type="radio" class="btn-check" name="amountEntriesShown" id="btnradio3" autocomplete="off" value="Alle">
-                <label class="btn btn-outline-secondary" for="btnradio3">Alle</label>
+                <div class="col-sm-3">
+                    <label class="control-label">Suche</label> <br />
+                    @if (ViewBag.SearchFilter is not null)
+                    {
+                        <input class="form-control" type="text" name="searchString" value="@ViewBag.SearchFilter"/>
+                    } 
+                    else
+                    {
+                        <input class="form-control" type="text" name="searchString" />
+                    }
+                </div>
+
+                <div class="col-sm-3">
+                    <label class="control-label">Datum von</label> <br />
+                    @if (ViewBag.DateFromFilter is not null)
+                    {
+                        <input class="form-control" name="dateFrom" type="date" value="@ViewBag.DateFromFilter"/>
+                    } 
+                    else
+                    {
+                        <input class="form-control" name="dateFrom" type="date" />
+                    }
+                </div>
+
+                <div class="col-sm-3">
+                    <label class="control-label">Datum bis</label> <br />
+                    @if (ViewBag.DateToFilter is not null)
+                    {
+                        <input class="form-control" name="dateTo" type="date" value="@ViewBag.DateToFilter" />
+                    }
+                    else
+                    {
+                        <input class="form-control" name="dateTo" type="date" />
+                    }
+                </div>
+
+                <div class="col-sm-3">
+                    <label class="control-label">Transaktionsart</label> <br />
+                    <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                        @if(ViewBag.IntakeFilter is not null && ViewBag.IntakeFilter == true){
+                            <input type="radio" class="btn-check" name="intake" id="intake1" autocomplete="off" value="true" checked>
+                        } else
+                        {
+                            <input type="radio" class="btn-check" name="intake" id="intake1" autocomplete="off" value="true">
+                        }
+                        <label class="btn btn-outline-success" for="intake1">Einnahmen</label>
+
+                        @if (ViewBag.IntakeFilter is not null && ViewBag.IntakeFilter == false)
+                        {
+                            <input type="radio" class="btn-check" name="intake" id="intake2" autocomplete="off" value="false" checked>
+                        }
+                        else
+                        {
+                            <input type="radio" class="btn-check" name="intake" id="intake2" autocomplete="off" value="false">
+                        }
+                        <label class="btn btn-outline-danger" for="intake2">Ausgaben</label>
+                    </div>
+                </div>
+
+                <div class="col-sm-3">
+                    <label class="control-label">Kategorie</label>
+                    <select class="form-control" asp-items="ViewBag.CategoryId" name="category"></select>
+                </div>
             </div>
 
-            <input class="btn btn-primary" type="submit" value="Filtern" />
+            <input class="btn btn-primary mt-3" type="submit" value="Filter anwenden" />
+            @if (ViewBag.ShowDeleteFilterButton == true)
+            {
+                <a class="btn btn-danger mt-3" asp-action="Index">Filter entfernen</a>
+            }
         </form>
     </div>
 </div>
@@ -52,7 +144,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+        @foreach (var item in Model) {
         <tr>
             <td style="background-color: @item.Category.ColorCode"></td>
             <td>
@@ -81,3 +173,8 @@
 }
     </tbody>
 </table>
+
+@if (Model.Count() < 1)
+{
+    <h4 class="text-center">Es wurden keine Einträge gefunden</h4>
+}

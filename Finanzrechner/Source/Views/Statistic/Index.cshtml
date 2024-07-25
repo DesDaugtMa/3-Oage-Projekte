@@ -1,0 +1,124 @@
+﻿@using Highsoft.Web.Mvc.Charts
+@using Highsoft.Web.Mvc.Charts.Rendering;
+@model Finanzrechner.Models.StatisticData
+
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+
+
+<div class="row">
+    <div class="col-sm-6">
+        <h4>Statistiken</h4>
+        <hr />
+    </div>
+    <div class="col-sm-6">
+        <h4>Zeitraum</h4>
+        <hr />
+        <form asp-controller="Statistic" asp-action="Index">
+            <div class="row">
+                <div class="col-sm-3">
+                    <label class="control-label">Datum von</label> <br />
+                    @if (ViewBag.DateFromFilter is not null)
+                    {
+                        <input class="form-control" name="dateFrom" type="date" value="@ViewBag.DateFromFilter" />
+                    }
+                    else
+                    {
+                        <input class="form-control" name="dateFrom" type="date" />
+                    }
+                </div>
+
+                <div class="col-sm-3">
+                    <label class="control-label">Datum bis</label> <br />
+                    @if (ViewBag.DateToFilter is not null)
+                    {
+                        <input class="form-control" name="dateTo" type="date" value="@ViewBag.DateToFilter" />
+                    }
+                    else
+                    {
+                        <input class="form-control" name="dateTo" type="date" />
+                    }
+                </div>
+            </div>
+            <input class="btn btn-primary mt-3" type="submit" value="Zeitraum anwenden" />
+            @if (ViewBag.ShowDeleteFilterButton == true)
+            {
+                <a class="btn btn-danger mt-3" asp-action="Index">Zeitraum entfernen</a>
+            }
+        </form>
+    </div>
+    <div class="col-sm-3">
+        <div class="statisticContainer">
+            <p>Anzahl Augsaben</p>
+            <h3>@Model.CountOfOuttakes</h3>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="statisticContainer">
+            <p>Summe Augsaben</p>
+            <h3 class="text-danger">- €@Model.SumOfOuttakes</h3>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="statisticContainer">
+            <p>Anzahl Einnahmen</p>
+            <h3>@Model.CountOfIntakes</h3>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="statisticContainer">
+            <p>Summe Einnahmen</p>
+            <h3 class="text-success">+ €@Model.SumOfIntakes</h3>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="statisticContainer">
+            <div id="top5intakes"></div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="statisticContainer">
+            <p>Top 5 Einnahmen</p>
+            <h3 class="text-success">+ €@Model.SumOfIntakes</h3>
+        </div>
+    </div>
+</div>
+
+<script>
+    Highcharts.chart('top5intakes', {
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'Top 5 Ausgaben'
+        },
+        xAxis: {
+            type: 'Transaktionen'
+        },
+        yAxis: {
+            title: {
+                text: 'Betrag'
+            }
+
+        },
+        legend: {
+            enabled: false
+        },
+        plotOptions: {
+            series: {
+                borderWidth: 0,
+                dataLabels: {
+                    enabled: true,
+                    format: '€ {point.y:.2f}'
+                }
+            }
+        },
+
+        series: [
+            {
+                name: 'Transaktionen',
+                data: @Html.Raw(Json.Serialize(Model.Top5Instakes))
+            }
+        ]
+    });
+</script>

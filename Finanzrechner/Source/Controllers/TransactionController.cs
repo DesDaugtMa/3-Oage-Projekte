@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Finanzrechner.Database;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Finanzrechner.Controllers
 {
@@ -19,10 +20,98 @@ namespace Finanzrechner.Controllers
         }
 
         // GET: Transaction
-        public async Task<IActionResult> Index(string? amountEntriesShown)
+        public async Task<IActionResult> Index(int? amountEntriesShown, string? searchString, DateTime? dateFrom, DateTime? dateTo, bool? intake, int? category)
         {
-            var databaseContext = _context.Transactions.Include(t => t.Category).OrderByDescending(x => x.TimeStamp);
-            return View(await databaseContext.ToListAsync());
+            List<Transaction> transactions = _context.Transactions.Include(x => x.Category).OrderByDescending(x => x.TimeStamp).ToList();
+
+            ViewBag.ShowDeleteFilterButton = false;
+
+            List<Category> selectlistCategories =
+            [
+                new Category
+                {
+                    Id = -1,
+                    Name = "Kategorie wählen",
+                    ColorCode = "#000000"
+                },
+                .. _context.Categories
+            ];
+
+            if (category is not null)
+            {
+                if (category != -1)
+                {
+                    transactions = transactions.Where(x => x.CategoryId == category).ToList();
+                    ViewData["CategoryId"] = new SelectList(selectlistCategories, "Id", "Name", _context.Categories.Where(x => x.Id == category).Select(x => x.Id).First());
+                    ViewBag.ShowDeleteFilterButton = true;
+                }
+                else
+                {
+                    ViewData["CategoryId"] = new SelectList(selectlistCategories, "Id", "Name");
+                }
+            } else
+            {
+                ViewData["CategoryId"] = new SelectList(selectlistCategories, "Id", "Name");
+            }
+
+            if (intake is not null)
+            {
+                if ((bool)intake)
+                {
+                    ViewBag.IntakeFilter = true;
+                    ViewBag.ShowDeleteFilterButton = true;
+                    transactions = transactions.Where(x => x.IsIntake == true).ToList();
+                }
+                else
+                {
+                    ViewBag.IntakeFilter = false;
+                    ViewBag.ShowDeleteFilterButton = true;
+                    transactions = transactions.Where(x => x.IsIntake == false).ToList();
+                }
+            }
+
+            // Date-Filter
+            if (dateFrom is not null)
+            {
+                ViewBag.DateFromFilter = dateFrom.Value.ToString("yyyy-MM-dd");
+                ViewBag.ShowDeleteFilterButton = true;
+                transactions = transactions.Where(x => x.TimeStamp >= dateFrom).ToList();
+            }
+
+            if (dateTo is not null)
+            {
+                ViewBag.DateToFilter = dateTo.Value.ToString("yyyy-MM-dd");
+                ViewBag.ShowDeleteFilterButton = true;
+                transactions = transactions.Where(x => x.TimeStamp <= dateTo).ToList();
+            }
+
+            // Search-Filter
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                ViewBag.SearchFilter = searchString;
+                ViewBag.ShowDeleteFilterButton = true;
+                transactions = transactions.Where(x => x.Description is not null && x.Description.Contains(searchString)).ToList();
+            }
+
+            // Amount-Filter
+            if (amountEntriesShown == 10)
+            {
+                ViewBag.SelectedAmountFilter = 1;
+                ViewBag.ShowDeleteFilterButton = true;
+                transactions = transactions.Take(10).ToList();
+            } 
+            else if (amountEntriesShown == 50)
+            {
+                ViewBag.SelectedAmountFilter = 2;
+                ViewBag.ShowDeleteFilterButton = true;
+                transactions = transactions.Take(50).ToList();
+            }
+            else
+            {
+                ViewBag.SelectedAmountFilter = 3;
+            }
+
+            return View(transactions);
         }
 
         // GET: Transaction/Create
