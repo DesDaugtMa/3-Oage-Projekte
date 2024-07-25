@@ -31,48 +31,50 @@
 
         <hr />
 
-        @foreach (var item in Model.AlreadySentMessages)
-        {
-            <div class="row ownContainer">
+        <div id="lastMessagesSentContainer">
 
-                <div class="col-9">
-                    <small>
-                        <a asp-action="Profile" asp-controller="Account" asp-route-username="@item.User.Username" style="color: black;">@item.User.Username</a>
-                    </small>
-                </div>
-
-                <div class="col-3">
-                    <small class="text-secondary">
-                        @item.PostedAt
-                    </small>
-                </div>
-
-                <div class="col-12">
-                    <p class="messageContent">
-                        @item.Text
-                    </p>
-                </div>
-                @if (HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
-                {
-                    <div class="col-11"></div>
-
-                    <div class="col-1 text-center">
-                        <form asp-action="LikeOrDislike">
-                            @if (item.DidCurrentUserLike)
-                            {
-                                <button type="submit" class="btn btn-danger" asp-action="LikeOrDislike" asp-route-messageid="@item.Id"><i class="bi bi-suit-heart-fill"></i></button>
-                            }
-                            else
-                            {
-                                <button type="submit" class="btn btn-outline-danger" asp-action="LikeOrDislike" asp-route-messageid="@item.Id"><i class="bi bi-suit-heart"></i></button>
-                            }
-                        </form>
-                        <small class="text-danger"><b>@item.NumberOfLikes</b></small>
+            @foreach (var item in Model.AlreadySentMessages)
+            {
+                <div class="row ownContainer">
+                    <div class="col-9">
+                        <small>
+                            <a asp-action="Profile" asp-controller="Account" asp-route-username="@item.User.Username" style="color: black;">@item.User.Username</a>
+                        </small>
                     </div>
-                }
 
-            </div>
-        }
+                    <div class="col-3">
+                        <small class="text-secondary">
+                            @item.PostedAt
+                        </small>
+                    </div>
+
+                    <div class="col-12">
+                        <p class="messageContent">
+                            @item.Text
+                        </p>
+                    </div>
+                    @if (HttpContextAccessor.HttpContext.User.Identity.IsAuthenticated)
+                    {
+                        <div class="col-11"></div>
+
+                        <div class="col-1 text-center">
+                            <form asp-action="LikeOrDislike">
+                                @if (item.DidCurrentUserLike)
+                                {
+                                    <button type="submit" class="btn btn-danger" asp-action="LikeOrDislike" asp-route-messageid="@item.Id"><i class="bi bi-suit-heart-fill"></i></button>
+                                }
+                                else
+                                {
+                                    <button type="submit" class="btn btn-outline-danger" asp-action="LikeOrDislike" asp-route-messageid="@item.Id"><i class="bi bi-suit-heart"></i></button>
+                                }
+                            </form>
+                            <small class="text-danger"><b>@item.NumberOfLikes</b></small>
+                        </div>
+                    }
+                </div>
+            }
+
+        </div>
     </div>
     <div class="col-sm-4">
         <div class="ownContainer" style="margin-top: 2.4rem;">

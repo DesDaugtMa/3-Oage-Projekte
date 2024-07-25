@@ -4,6 +4,7 @@ using Chat.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Security.Claims;
@@ -117,16 +118,14 @@ namespace Chat.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> LikeOrDislike(int messageId)
+        public async Task<IActionResult> LikeOrDislike(int id)
         {
-            Like like = _context.Likes.Where(x => x.MessageId == messageId && x.UserId == Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)).FirstOrDefault()!;
+            Like like = _context.Likes.Where(x => x.MessageId == id && x.UserId == Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)).FirstOrDefault()!;
 
             if (like is null)
             {
-                _context.Likes.Add(new Like { MessageId = messageId, UserId = Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!) });
+                _context.Likes.Add(new Like { MessageId = id, UserId = Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!) });
             } else
             {
                 _context.Likes.Remove(like);
@@ -141,6 +140,46 @@ namespace Chat.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public string GetLastMessages()
+        {
+            int amountOfMessages = 0;
+
+            if (User.FindFirstValue(ClaimTypes.NameIdentifier) is not null)
+                amountOfMessages = 10;
+            else
+                amountOfMessages = 5;
+
+            List<Message> messages = _context.Messages.Include(x => x.User).OrderByDescending(x => x.PostedAt).Take(amountOfMessages).ToList();
+
+            foreach (Message message in messages)
+            {
+                message.DateTimeFormated = message.PostedAt.ToString("dd.MM.yyyy HH:mm:ss");
+
+                if (amountOfMessages == 5)
+                    message.IsUserLoggedIn = false;
+                else
+                {
+                    message.IsUserLoggedIn = true;
+
+                    if (_context.Likes.Where(x => x.MessageId == message.Id).Any(x => x.UserId == Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!)))
+                        message.DidCurrentUserLike = true;
+                    else
+                        message.DidCurrentUserLike = false;
+                }
+
+                message.NumberOfLikes = _context.Likes.Where(x => x.MessageId == message.Id).Count();
+            }
+
+            return JsonConvert.SerializeObject(
+                messages, 
+                Formatting.None, 
+                new JsonSerializerSettings()
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                }
+            );
         }
     }
 }

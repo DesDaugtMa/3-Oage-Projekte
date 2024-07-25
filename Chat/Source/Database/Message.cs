@@ -27,5 +27,11 @@ namespace Chat.Database
 
         [NotMapped]
         public bool DidCurrentUserLike { get; set; }
+
+        [NotMapped]
+        public string DateTimeFormated { get; set; }
+
+        [NotMapped]
+        public bool IsUserLoggedIn { get; set; }
     }
 }
