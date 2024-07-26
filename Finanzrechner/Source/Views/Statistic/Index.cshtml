@@ -73,19 +73,18 @@
     </div>
     <div class="col-sm-6">
         <div class="statisticContainer">
-            <div id="top5intakes"></div>
+            <div id="top5outtakes"></div>
         </div>
     </div>
     <div class="col-sm-6">
         <div class="statisticContainer">
-            <p>Top 5 Einnahmen</p>
-            <h3 class="text-success">+ €@Model.SumOfIntakes</h3>
+            <div id="top5intakes"></div>
         </div>
     </div>
 </div>
 
 <script>
-    Highcharts.chart('top5intakes', {
+    Highcharts.chart('top5outtakes', {
         chart: {
             type: 'column'
         },
@@ -93,32 +92,67 @@
             text: 'Top 5 Ausgaben'
         },
         xAxis: {
-            type: 'Transaktionen'
+            categories: @Html.Raw(Json.Serialize(Model.Top5Outtakes.Categories)),
+            crosshair: true,
+            accessibility: {
+                description: 'Transaktionen'
+            }
         },
         yAxis: {
+            min: 0,
             title: {
-                text: 'Betrag'
+                text: 'Betrag (€)'
             }
-
         },
-        legend: {
-            enabled: false
+        tooltip: {
+            valuePrefix: '€ '
         },
         plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            },
             series: {
-                borderWidth: 0,
-                dataLabels: {
-                    enabled: true,
-                    format: '€ {point.y:.2f}'
-                }
+                animation: false,
+                color: '#DC3545'
             }
         },
-
-        series: [
-            {
-                name: 'Transaktionen',
-                data: @Html.Raw(Json.Serialize(Model.Top5Instakes))
-            }
-        ]
+        series: @Html.Raw(Json.Serialize(Model.Top5Outtakes.Series))
     });
+
+    Highcharts.chart('top5intakes', {
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'Top 5 Einnahmen'
+        },
+        xAxis: {
+            categories: @Html.Raw(Json.Serialize(Model.Top5Intakes.Categories)),
+            crosshair: true,
+            accessibility: {
+                description: 'Transaktionen'
+            }
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Betrag (€)'
+            }
+        },
+        tooltip: {
+            valuePrefix: '€ '
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            },
+            series: {
+                animation: false,
+                color: '#198754'
+            }
+        },
+        series: @Html.Raw(Json.Serialize(Model.Top5Intakes.Series))
+        });
 </script>
