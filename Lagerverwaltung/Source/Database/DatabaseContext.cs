@@ -16,5 +16,6 @@ namespace Lagerverwaltung.Database
                 .IsUnique();
         }
         public DbSet<Lagerverwaltung.Database.Category> Category { get; set; } = default!;
+        public DbSet<Lagerverwaltung.Database.Sale> Sale { get; set; } = default!;
     }
 }

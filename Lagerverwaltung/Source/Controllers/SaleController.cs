@@ -9,23 +9,23 @@ using Lagerverwaltung.Database;
 
 namespace Lagerverwaltung.Controllers
 {
-    public class ProductController : Controller
+    public class SaleController : Controller
     {
         private readonly DatabaseContext _context;
 
-        public ProductController(DatabaseContext context)
+        public SaleController(DatabaseContext context)
         {
             _context = context;
         }
 
-        // GET: Product
+        // GET: Sale
         public async Task<IActionResult> Index()
         {
-            var databaseContext = _context.Products.Include(p => p.Category);
+            var databaseContext = _context.Sale.Include(s => s.Customer).Include(s => s.Product);
             return View(await databaseContext.ToListAsync());
         }
 
-        // GET: Product/Details/5
+        // GET: Sale/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,46 +33,48 @@ namespace Lagerverwaltung.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products
-                .Include(p => p.Category)
-                .Include(x => x.Sales)
-                .Include(x => x.Reorders)
+            var sale = await _context.Sale
+                .Include(s => s.Customer)
+                .Include(s => s.Product)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (product == null)
+            if (sale == null)
             {
                 return NotFound();
             }
 
-            return View(product);
+            return View(sale);
         }
 
-        // GET: Product/Create
+        // GET: Sale/Create
         public IActionResult Create()
         {
-            ViewData["CategoryId"] = new SelectList(_context.Set<Category>(), "Id", "Name");
+            ViewData["CustomerId"] = new SelectList(_context.Set<Customer>(), "Id", "Firstname");
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id");
             return View();
         }
 
-        // POST: Product/Create
+        // POST: Sale/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description,InStorage,CurrentSellPrice,CategoryId")] Product product)
+        public async Task<IActionResult> Create([Bind("Id,CustomerId,ProductId,Quantity,ActualSalePrice,SaleDate")] Sale sale)
         {
             try{
-                _context.Add(product);
+                _context.Add(sale);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }catch (Exception e)
+            }
+            catch (Exception ex)
             {
 
             }
-            ViewData["CategoryId"] = new SelectList(_context.Set<Category>(), "Id", "Name", product.CategoryId);
-            return View(product);
+            ViewData["CustomerId"] = new SelectList(_context.Set<Customer>(), "Id", "Firstname", sale.CustomerId);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id", sale.ProductId);
+            return View(sale);
         }
 
-        // GET: Product/Edit/5
+        // GET: Sale/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -80,23 +82,24 @@ namespace Lagerverwaltung.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
+            var sale = await _context.Sale.FindAsync(id);
+            if (sale == null)
             {
                 return NotFound();
             }
-            ViewData["CategoryId"] = new SelectList(_context.Set<Category>(), "Id", "Name", product.CategoryId);
-            return View(product);
+            ViewData["CustomerId"] = new SelectList(_context.Set<Customer>(), "Id", "Firstname", sale.CustomerId);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id", sale.ProductId);
+            return View(sale);
         }
 
-        // POST: Product/Edit/5
+        // POST: Sale/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description,InStorage,CurrentSellPrice,CategoryId")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,CustomerId,ProductId,Quantity,ActualSalePrice,SaleDate")] Sale sale)
         {
-            if (id != product.Id)
+            if (id != sale.Id)
             {
                 return NotFound();
             }
@@ -105,12 +108,12 @@ namespace Lagerverwaltung.Controllers
             {
                 try
                 {
-                    _context.Update(product);
+                    _context.Update(sale);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProductExists(product.Id))
+                    if (!SaleExists(sale.Id))
                     {
                         return NotFound();
                     }
@@ -121,11 +124,12 @@ namespace Lagerverwaltung.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoryId"] = new SelectList(_context.Set<Category>(), "Id", "Name", product.CategoryId);
-            return View(product);
+            ViewData["CustomerId"] = new SelectList(_context.Set<Customer>(), "Id", "Firstname", sale.CustomerId);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id", sale.ProductId);
+            return View(sale);
         }
 
-        // GET: Product/Delete/5
+        // GET: Sale/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -133,35 +137,36 @@ namespace Lagerverwaltung.Controllers
                 return NotFound();
             }
 
-            var product = await _context.Products
-                .Include(p => p.Category)
+            var sale = await _context.Sale
+                .Include(s => s.Customer)
+                .Include(s => s.Product)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (product == null)
+            if (sale == null)
             {
                 return NotFound();
             }
 
-            return View(product);
+            return View(sale);
         }
 
-        // POST: Product/Delete/5
+        // POST: Sale/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-            if (product != null)
+            var sale = await _context.Sale.FindAsync(id);
+            if (sale != null)
             {
-                _context.Products.Remove(product);
+                _context.Sale.Remove(sale);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProductExists(int id)
+        private bool SaleExists(int id)
         {
-            return _context.Products.Any(e => e.Id == id);
+            return _context.Sale.Any(e => e.Id == id);
         }
     }
 }

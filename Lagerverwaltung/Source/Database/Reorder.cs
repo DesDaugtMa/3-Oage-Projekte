@@ -18,5 +18,7 @@ namespace Lagerverwaltung.Database
         public DateTime ReorderDate { get; set; }
 
         public DateTime EstimatedDeliveryDate { get; set; }
+
+        public bool DidArrive { get; set; }
     }
 }

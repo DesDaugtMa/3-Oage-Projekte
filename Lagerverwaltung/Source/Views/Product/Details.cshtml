@@ -1,48 +1,121 @@
 ﻿@model Lagerverwaltung.Database.Product
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Produktinformationen";
 }
 
-<h1>Details</h1>
-
-<div>
-    <h4>Product</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.InStorage)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.InStorage)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CurrentSellPrice)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CurrentSellPrice)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Category)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Category.Id)
-        </dd>
-    </dl>
+<h1 style="display: inline-block; margin-right: 1rem;">@Html.DisplayFor(model => model.Name)</h1>
+<a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Bearbeiten</a>
+<a asp-action="Index" class="btn btn-outline-secondary">Zurück</a>
+<hr />
+<div class="row">
+    <div class="col-sm-3">
+        <div class="ownContainer">
+            <h4>Beschreibung</h4>
+            <span>@Html.DisplayFor(model => model.Description)</span>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="ownContainer">
+            <h4>Lagerbestand</h4>
+            <span>@Html.DisplayFor(model => model.InStorage)</span>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="ownContainer">
+            <h4>Aktueller Verkaufspreis</h4>
+            <span>€ @Html.DisplayFor(model => model.CurrentSellPrice)</span>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="ownContainer">
+            <h4>Kategorie</h4>
+            <span>@Html.DisplayFor(model => model.Category.Name)</span>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+<hr />
+
+<div class="row">
+    <div class="col-sm-6">
+        <h3>Verkäufe</h3>
+        <a asp-controller="Sale" asp-action="Create" asp-route-productid="@Model.Id" class="btn btn-success">Verkauf hinzufügen</a>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="text-center">
+                        Datum
+                    </th>
+                    <th class="text-center">
+                        Anzahl
+                    </th>
+                    <th class="text-center">
+                        Gesamtbetrag
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Sales)
+                {
+                    <tr>
+                        <td class="text-center">
+                            @item.SaleDate.ToString("dd.MM.yyyy")
+                        </td>
+                        <td class="text-center">
+                            @Html.DisplayFor(modelItem => item.Quantity)
+                        </td>
+                        <td class="text-center">
+                            € @Html.DisplayFor(modelItem => item.ActualSalePrice)
+                        </td>
+                        <td class="text-end">
+                            <a asp-controller="Sale" asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-secondary"><i class="bi bi-info-circle"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="col-sm-6">
+        <h3>Nachbestellungen</h3>
+        <a asp-controller="Reorder" asp-action="Create" asp-route-productid="@Model.Id" class="btn btn-success">Nachbestellung hinzufügen</a>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="text-center">
+                        Bestellt am
+                    </th>
+                    <th class="text-center">
+                        Lieferdatum
+                    </th>
+                    <th class="text-center">
+                        Anzahl
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Reorders)
+                {
+                    <tr>
+                        <td class="text-center">
+                            @item.ReorderDate.ToString("dd.MM.yyyy")
+                        </td>
+                        <td class="text-center">
+                            @item.EstimatedDeliveryDate.ToString("dd.MM.yyyy")
+                        </td>
+                        <td class="text-center">
+                            @item.Quantity
+                        </td>
+                        <td class="text-end">
+                            <a asp-controller="Reorder" asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-secondary"><i class="bi bi-info-circle"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>

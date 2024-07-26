@@ -15,6 +15,8 @@ namespace Lagerverwaltung.Database
 
         public int Quantity { get; set; }
 
+        public decimal ActualSalePrice { get; set; }
+
         public DateTime SaleDate { get; set; }
     }
 }

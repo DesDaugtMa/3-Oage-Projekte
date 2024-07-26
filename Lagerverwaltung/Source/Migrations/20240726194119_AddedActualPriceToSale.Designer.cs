@@ -4,6 +4,7 @@ using Lagerverwaltung.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lagerverwaltung.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240726194119_AddedActualPriceToSale")]
+    partial class AddedActualPriceToSale
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -134,9 +137,6 @@ namespace Lagerverwaltung.Migrations
 
                     b.Property<int>("DeliveryCompanyId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("DidArrive")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime>("EstimatedDeliveryDate")
                         .HasColumnType("datetime2");
