@@ -36,7 +36,7 @@ namespace Lagerverwaltung.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Category");
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Lagerverwaltung.Database.Customer", b =>
@@ -63,7 +63,7 @@ namespace Lagerverwaltung.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Customer");
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("Lagerverwaltung.Database.DeliveryCompany", b =>
@@ -84,7 +84,7 @@ namespace Lagerverwaltung.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DeliveryCompany");
+                    b.ToTable("DeliveryCompanies");
                 });
 
             modelBuilder.Entity("Lagerverwaltung.Database.Product", b =>
@@ -156,7 +156,7 @@ namespace Lagerverwaltung.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Reorder");
+                    b.ToTable("Reorders");
                 });
 
             modelBuilder.Entity("Lagerverwaltung.Database.Sale", b =>
@@ -188,7 +188,7 @@ namespace Lagerverwaltung.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Sale");
+                    b.ToTable("Sales");
                 });
 
             modelBuilder.Entity("Lagerverwaltung.Database.Product", b =>

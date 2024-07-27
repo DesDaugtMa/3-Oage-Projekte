@@ -2,7 +2,33 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="row m-5">
+    <div class="col-6">
+        <div class="ownContainer text-center">
+            <h2>Verkauf</h2>
+            <br />
+            <a asp-controller="Sale" asp-action="Create" class="btn btn-success">Verkauf erfassen</a>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="ownContainer text-center">
+            <h2>Nachbestellung</h2>
+            <br />
+            <a asp-controller="Sale" asp-action="Create" class="btn btn-success">Nachbestellung erfassen</a>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="ownContainer text-center">
+            <h2>Lagerbestand</h2>
+            <br />
+            <a asp-controller="Product" asp-action="Index" class="btn btn-primary">Lagerbestand einsehen</a>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="ownContainer text-center">
+            <h2>Kategorien</h2>
+            <br />
+            <a asp-controller="Category" asp-action="Index" class="btn btn-primary">Kategorien einsehen</a>
+        </div>
+    </div>
 </div>

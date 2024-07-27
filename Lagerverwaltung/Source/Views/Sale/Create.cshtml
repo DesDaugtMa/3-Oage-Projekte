@@ -14,8 +14,9 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="CustomerId" class="control-label"></label>
-                <select asp-for="CustomerId" class ="form-control" asp-items="ViewBag.CustomerId"></select>
+                <select asp-for="CustomerId" class="form-control" asp-items="ViewBag.CustomerId"></select>
             </div>
+            <a asp-controller="Customer" asp-action="Create" asp-route-returnToCreateSale="true" class="btn btn-success">Kunde hinzufügen</a>
             <div class="form-group">
                 <label asp-for="ProductId" class="control-label"></label>
                 <select asp-for="ProductId" class ="form-control" asp-items="ViewBag.ProductId"></select>

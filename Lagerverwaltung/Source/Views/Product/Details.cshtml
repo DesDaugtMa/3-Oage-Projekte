@@ -94,6 +94,9 @@
                     <th class="text-center">
                         Anzahl
                     </th>
+                    <th class="text-center">
+                        Abgeschlossen
+                    </th>
                     <th></th>
                 </tr>
             </thead>
@@ -109,6 +112,16 @@
                         </td>
                         <td class="text-center">
                             @item.Quantity
+                        </td>
+                        <td class="text-center">
+                            @if(item.DidArrive == true)
+                            {
+                                <span class="text-success">Ja</span>
+                            }
+                            else
+                            {
+                                <span class="text-danger">Nein</span>
+                            }
                         </td>
                         <td class="text-end">
                             <a asp-controller="Reorder" asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-secondary"><i class="bi bi-info-circle"></i></a>

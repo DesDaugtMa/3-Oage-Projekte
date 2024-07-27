@@ -42,7 +42,7 @@ namespace Finanzrechner.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Finanzrechner.Database.Transaction", b =>
@@ -73,7 +73,7 @@ namespace Finanzrechner.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Transactions");
+                    b.ToTable("Transactions", (string)null);
                 });
 
             modelBuilder.Entity("Finanzrechner.Database.Transaction", b =>

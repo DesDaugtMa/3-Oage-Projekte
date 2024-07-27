@@ -8,6 +8,11 @@ namespace Lagerverwaltung.Database
         public DatabaseContext(DbContextOptions options) : base(options) { }
 
         public DbSet<Product> Products { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<DeliveryCompany> DeliveryCompanies { get; set; }
+        public DbSet<Reorder> Reorders { get; set; }
+        public DbSet<Sale> Sales { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -15,7 +20,5 @@ namespace Lagerverwaltung.Database
                 .HasIndex(u => u.Name)
                 .IsUnique();
         }
-        public DbSet<Lagerverwaltung.Database.Category> Category { get; set; } = default!;
-        public DbSet<Lagerverwaltung.Database.Sale> Sale { get; set; } = default!;
     }
 }

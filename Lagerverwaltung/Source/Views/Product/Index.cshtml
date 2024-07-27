@@ -11,6 +11,41 @@
     </div>
     <div class="col-sm-9">
         <h3>Filter</h3>
+        <form asp-controller="Product" asp-action="Index">
+            <div class="row">
+                <div class="col-sm-3">
+                    <label class="control-label">Suche</label> <br />
+                    @if (ViewBag.SearchFilter is not null)
+                    {
+                        <input class="form-control" type="text" name="searchString" value="@ViewBag.SearchFilter"/>
+                    } 
+                    else
+                    {
+                        <input class="form-control" type="text" name="searchString" />
+                    }
+                </div>
+                <div class="col-sm-2">
+                    <label class="control-label">Lagerbestand</label> <br />
+                    @if (ViewBag.InStorage is not null)
+                    {
+                        <input class="form-control" type="number" name="inStorageFilter" value="@ViewBag.InStorage" />
+                    }
+                    else
+                    {
+                        <input class="form-control" type="number" name="inStorageFilter" />
+                    }
+                </div>
+                <div class="col-sm-3">
+                    <label class="control-label">Kategorie</label>
+                    <select class="form-control" asp-items="ViewBag.CategoryId" name="category"></select>
+                </div>
+            </div>
+            <input class="btn btn-primary mt-3" type="submit" value="Filter anwenden" />
+            @if (ViewBag.ShowDeleteFilterButton == true)
+            {
+                <a class="btn btn-danger mt-3" asp-action="Index">Filter entfernen</a>
+            }
+        </form>
     </div>
 </div>
 

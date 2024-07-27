@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Lagerverwaltung.Database;
+using Microsoft.Identity.Client.Extensions.Msal;
 
 namespace Lagerverwaltung.Controllers
 {
@@ -19,10 +20,55 @@ namespace Lagerverwaltung.Controllers
         }
 
         // GET: Product
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? searchString, int? inStorageFilter, int? category)
         {
-            var databaseContext = _context.Products.Include(p => p.Category);
-            return View(await databaseContext.ToListAsync());
+            List<Product> products = _context.Products.Include(x => x.Category).ToList();
+
+            ViewBag.ShowDeleteFilterButton = false;
+
+            List<Category> selectlistCategories =
+            [
+                new Category
+                {
+                    Id = -1,
+                    Name = "-- Kategorie wählen --"
+                },
+                .. _context.Categories
+            ];
+
+            if (category is not null)
+            {
+                if (category != -1)
+                {
+                    products = products.Where(x => x.CategoryId == category).ToList();
+                    ViewData["CategoryId"] = new SelectList(selectlistCategories, "Id", "Name", _context.Categories.Where(x => x.Id == category).Select(x => x.Id).First());
+                    ViewBag.ShowDeleteFilterButton = true;
+                }
+                else
+                {
+                    ViewData["CategoryId"] = new SelectList(selectlistCategories, "Id", "Name");
+                }
+            }
+            else
+            {
+                ViewData["CategoryId"] = new SelectList(selectlistCategories, "Id", "Name");
+            }
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                ViewBag.SearchFilter = searchString;
+                ViewBag.ShowDeleteFilterButton = true;
+                products = products.Where(x => x.Name.Contains(searchString)).ToList();
+            }
+
+            if (inStorageFilter is not null)
+            {
+                ViewBag.InStorage = inStorageFilter;
+                ViewBag.ShowDeleteFilterButton = true;
+                products = products.Where(x => x.InStorage == (int)inStorageFilter).ToList();
+            }
+
+            return View(products);
         }
 
         // GET: Product/Details/5
@@ -38,10 +84,13 @@ namespace Lagerverwaltung.Controllers
                 .Include(x => x.Sales)
                 .Include(x => x.Reorders)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (product == null)
             {
                 return NotFound();
             }
+
+            product.Sales = product.Sales.OrderByDescending(x => x.SaleDate).Take(10).ToList();
 
             return View(product);
         }

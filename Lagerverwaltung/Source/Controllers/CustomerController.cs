@@ -9,22 +9,22 @@ using Lagerverwaltung.Database;
 
 namespace Lagerverwaltung.Controllers
 {
-    public class CategoryController : Controller
+    public class CustomerController : Controller
     {
         private readonly DatabaseContext _context;
 
-        public CategoryController(DatabaseContext context)
+        public CustomerController(DatabaseContext context)
         {
             _context = context;
         }
 
-        // GET: Category
+        // GET: Customer
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categories.ToListAsync());
+            return View(await _context.Customers.ToListAsync());
         }
 
-        // GET: Category/Details/5
+        // GET: Customer/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -32,43 +32,56 @@ namespace Lagerverwaltung.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories
+            var customer = await _context.Customers
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
+            if (customer == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(customer);
         }
 
-        // GET: Category/Create
-        public IActionResult Create()
+        // GET: Customer/Create
+        public IActionResult Create(bool? returnToCreateSale)
         {
+            if (returnToCreateSale is not null && (bool)returnToCreateSale == true)
+            {
+                ViewBag.ReturnToCreateSale = true;
+            } 
+            else
+            {
+                ViewBag.ReturnToCreateSale = false;
+            }
+
             return View();
         }
 
-        // POST: Category/Create
+        // POST: Customer/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Category category)
+        public async Task<IActionResult> Create([Bind("Id,Firstname,Lastname,EMailAddress,Company")] Customer customer, bool? returnToCreateSale)
         {
-            
             try{
-                _context.Add(category);
+                _context.Add(customer);
                 await _context.SaveChangesAsync();
+
+                if (returnToCreateSale is not null && (bool)returnToCreateSale == true)
+                {
+                    return RedirectToAction("Create", "Sale", null);
+                }
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
 
             }
-            return View(category);
+            return View(customer);
         }
 
-        // GET: Category/Edit/5
+        // GET: Customer/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -76,22 +89,22 @@ namespace Lagerverwaltung.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null)
+            var customer = await _context.Customers.FindAsync(id);
+            if (customer == null)
             {
                 return NotFound();
             }
-            return View(category);
+            return View(customer);
         }
 
-        // POST: Category/Edit/5
+        // POST: Customer/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Firstname,Lastname,EMailAddress,Company")] Customer customer)
         {
-            if (id != category.Id)
+            if (id != customer.Id)
             {
                 return NotFound();
             }
@@ -100,12 +113,12 @@ namespace Lagerverwaltung.Controllers
             {
                 try
                 {
-                    _context.Update(category);
+                    _context.Update(customer);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CategoryExists(category.Id))
+                    if (!CustomerExists(customer.Id))
                     {
                         return NotFound();
                     }
@@ -116,10 +129,10 @@ namespace Lagerverwaltung.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            return View(customer);
         }
 
-        // GET: Category/Delete/5
+        // GET: Customer/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -127,34 +140,34 @@ namespace Lagerverwaltung.Controllers
                 return NotFound();
             }
 
-            var category = await _context.Categories
+            var customer = await _context.Customers
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (category == null)
+            if (customer == null)
             {
                 return NotFound();
             }
 
-            return View(category);
+            return View(customer);
         }
 
-        // POST: Category/Delete/5
+        // POST: Customer/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
-            if (category != null)
+            var customer = await _context.Customers.FindAsync(id);
+            if (customer != null)
             {
-                _context.Categories.Remove(category);
+                _context.Customers.Remove(customer);
             }
 
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CategoryExists(int id)
+        private bool CustomerExists(int id)
         {
-            return _context.Categories.Any(e => e.Id == id);
+            return _context.Customers.Any(e => e.Id == id);
         }
     }
 }

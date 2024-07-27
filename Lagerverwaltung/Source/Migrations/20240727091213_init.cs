@@ -12,7 +12,7 @@ namespace Lagerverwaltung.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Category",
+                name: "Categories",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -21,11 +21,11 @@ namespace Lagerverwaltung.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Category", x => x.Id);
+                    table.PrimaryKey("PK_Categories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Customer",
+                name: "Customers",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -37,11 +37,11 @@ namespace Lagerverwaltung.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Customer", x => x.Id);
+                    table.PrimaryKey("PK_Customers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "DeliveryCompany",
+                name: "DeliveryCompanies",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -51,7 +51,7 @@ namespace Lagerverwaltung.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DeliveryCompany", x => x.Id);
+                    table.PrimaryKey("PK_DeliveryCompanies", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -70,15 +70,15 @@ namespace Lagerverwaltung.Migrations
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Products_Category_CategoryId",
+                        name: "FK_Products_Categories_CategoryId",
                         column: x => x.CategoryId,
-                        principalTable: "Category",
+                        principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Reorder",
+                name: "Reorders",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -87,19 +87,20 @@ namespace Lagerverwaltung.Migrations
                     DeliveryCompanyId = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     ReorderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EstimatedDeliveryDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    EstimatedDeliveryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DidArrive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Reorder", x => x.Id);
+                    table.PrimaryKey("PK_Reorders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Reorder_DeliveryCompany_DeliveryCompanyId",
+                        name: "FK_Reorders_DeliveryCompanies_DeliveryCompanyId",
                         column: x => x.DeliveryCompanyId,
-                        principalTable: "DeliveryCompany",
+                        principalTable: "DeliveryCompanies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Reorder_Products_ProductId",
+                        name: "FK_Reorders_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
@@ -107,7 +108,7 @@ namespace Lagerverwaltung.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Sale",
+                name: "Sales",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -115,19 +116,20 @@ namespace Lagerverwaltung.Migrations
                     CustomerId = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
+                    ActualSalePrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     SaleDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Sale", x => x.Id);
+                    table.PrimaryKey("PK_Sales", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Sale_Customer_CustomerId",
+                        name: "FK_Sales_Customers_CustomerId",
                         column: x => x.CustomerId,
-                        principalTable: "Customer",
+                        principalTable: "Customers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Sale_Products_ProductId",
+                        name: "FK_Sales_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
@@ -146,23 +148,23 @@ namespace Lagerverwaltung.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reorder_DeliveryCompanyId",
-                table: "Reorder",
+                name: "IX_Reorders_DeliveryCompanyId",
+                table: "Reorders",
                 column: "DeliveryCompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reorder_ProductId",
-                table: "Reorder",
+                name: "IX_Reorders_ProductId",
+                table: "Reorders",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Sale_CustomerId",
-                table: "Sale",
+                name: "IX_Sales_CustomerId",
+                table: "Sales",
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Sale_ProductId",
-                table: "Sale",
+                name: "IX_Sales_ProductId",
+                table: "Sales",
                 column: "ProductId");
         }
 
@@ -170,22 +172,22 @@ namespace Lagerverwaltung.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Reorder");
+                name: "Reorders");
 
             migrationBuilder.DropTable(
-                name: "Sale");
+                name: "Sales");
 
             migrationBuilder.DropTable(
-                name: "DeliveryCompany");
+                name: "DeliveryCompanies");
 
             migrationBuilder.DropTable(
-                name: "Customer");
+                name: "Customers");
 
             migrationBuilder.DropTable(
                 name: "Products");
 
             migrationBuilder.DropTable(
-                name: "Category");
+                name: "Categories");
         }
     }
 }

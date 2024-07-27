@@ -31,7 +31,7 @@ namespace Finanzrechner.Controllers
                 new Category
                 {
                     Id = -1,
-                    Name = "Kategorie wählen",
+                    Name = "-- Kategorie wählen --",
                     ColorCode = "#000000"
                 },
                 .. _context.Categories

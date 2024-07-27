@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Lagerverwaltung.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20240726195748_AddedDidArriveToReorder")]
-    partial class AddedDidArriveToReorder
+    [Migration("20240727091213_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,7 +39,7 @@ namespace Lagerverwaltung.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Category");
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Lagerverwaltung.Database.Customer", b =>
@@ -66,7 +66,7 @@ namespace Lagerverwaltung.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Customer");
+                    b.ToTable("Customers");
                 });
 
             modelBuilder.Entity("Lagerverwaltung.Database.DeliveryCompany", b =>
@@ -87,7 +87,7 @@ namespace Lagerverwaltung.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DeliveryCompany");
+                    b.ToTable("DeliveryCompanies");
                 });
 
             modelBuilder.Entity("Lagerverwaltung.Database.Product", b =>
@@ -159,7 +159,7 @@ namespace Lagerverwaltung.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Reorder");
+                    b.ToTable("Reorders");
                 });
 
             modelBuilder.Entity("Lagerverwaltung.Database.Sale", b =>
@@ -191,7 +191,7 @@ namespace Lagerverwaltung.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Sale");
+                    b.ToTable("Sales");
                 });
 
             modelBuilder.Entity("Lagerverwaltung.Database.Product", b =>

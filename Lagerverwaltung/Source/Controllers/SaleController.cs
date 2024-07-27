@@ -21,7 +21,7 @@ namespace Lagerverwaltung.Controllers
         // GET: Sale
         public async Task<IActionResult> Index()
         {
-            var databaseContext = _context.Sale.Include(s => s.Customer).Include(s => s.Product);
+            var databaseContext = _context.Sales.Include(s => s.Customer).Include(s => s.Product);
             return View(await databaseContext.ToListAsync());
         }
 
@@ -33,7 +33,7 @@ namespace Lagerverwaltung.Controllers
                 return NotFound();
             }
 
-            var sale = await _context.Sale
+            var sale = await _context.Sales
                 .Include(s => s.Customer)
                 .Include(s => s.Product)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -82,7 +82,7 @@ namespace Lagerverwaltung.Controllers
                 return NotFound();
             }
 
-            var sale = await _context.Sale.FindAsync(id);
+            var sale = await _context.Sales.FindAsync(id);
             if (sale == null)
             {
                 return NotFound();
@@ -137,7 +137,7 @@ namespace Lagerverwaltung.Controllers
                 return NotFound();
             }
 
-            var sale = await _context.Sale
+            var sale = await _context.Sales
                 .Include(s => s.Customer)
                 .Include(s => s.Product)
                 .FirstOrDefaultAsync(m => m.Id == id);
@@ -154,10 +154,10 @@ namespace Lagerverwaltung.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var sale = await _context.Sale.FindAsync(id);
+            var sale = await _context.Sales.FindAsync(id);
             if (sale != null)
             {
-                _context.Sale.Remove(sale);
+                _context.Sales.Remove(sale);
             }
 
             await _context.SaveChangesAsync();
@@ -166,7 +166,7 @@ namespace Lagerverwaltung.Controllers
 
         private bool SaleExists(int id)
         {
-            return _context.Sale.Any(e => e.Id == id);
+            return _context.Sales.Any(e => e.Id == id);
         }
     }
 }
