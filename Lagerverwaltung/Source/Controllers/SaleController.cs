@@ -46,10 +46,15 @@ namespace Lagerverwaltung.Controllers
         }
 
         // GET: Sale/Create
-        public IActionResult Create()
+        public IActionResult Create(bool? returnToProductDetails)
         {
-            ViewData["CustomerId"] = new SelectList(_context.Set<Customer>(), "Id", "Firstname");
-            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id");
+            ViewBag.ReturnToProductDetails = false;
+
+            if(returnToProductDetails is not null && (bool)returnToProductDetails == true)
+                ViewBag.ReturnToProductDetails = true;
+
+            ViewData["CustomerId"] = new SelectList(_context.Set<Customer>(), "Id", "FullInformation");
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name");
             return View();
         }
 
@@ -58,19 +63,28 @@ namespace Lagerverwaltung.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CustomerId,ProductId,Quantity,ActualSalePrice,SaleDate")] Sale sale)
+        public async Task<IActionResult> Create([Bind("Id,CustomerId,ProductId,Quantity,ActualSalePrice,SaleDate")] Sale sale, bool? returnToProductDetails)
         {
             try{
                 _context.Add(sale);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (returnToProductDetails is not null && (bool)returnToProductDetails == true)
+                    return RedirectToAction(nameof(Details), "Product", new { id = sale.ProductId });
+                else
+                    return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
 
             }
-            ViewData["CustomerId"] = new SelectList(_context.Set<Customer>(), "Id", "Firstname", sale.CustomerId);
-            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Id", sale.ProductId);
+
+            ViewBag.ReturnToProductDetails = false;
+
+            if (returnToProductDetails is not null && (bool)returnToProductDetails == true)
+                ViewBag.ReturnToProductDetails = true;
+
+            ViewData["CustomerId"] = new SelectList(_context.Set<Customer>(), "Id", "FullInformation", sale.CustomerId);
+            ViewData["ProductId"] = new SelectList(_context.Products, "Id", "Name", sale.ProductId);
             return View(sale);
         }
 

@@ -4,13 +4,11 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
-
-<h4>Sale</h4>
+<h1>Verkauf erfassen</h1>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" asp-route-returnToProductDetails="@ViewBag.ReturnToProductDetails">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="CustomerId" class="control-label"></label>
@@ -33,18 +31,15 @@
             </div>
             <div class="form-group">
                 <label asp-for="SaleDate" class="control-label"></label>
-                <input asp-for="SaleDate" class="form-control" />
+                <input asp-for="SaleDate" class="form-control" type="date"/>
                 <span asp-validation-for="SaleDate" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+            <div class="form-group mt-3">
+                <input type="submit" value="Erstellen" class="btn btn-primary" />
+                <a asp-controller="Home" asp-action="Index" asp-route-returnToProductDetails="@ViewBag.ReturnToProductDetails" class="btn btn-outline-secondary">Zurück</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

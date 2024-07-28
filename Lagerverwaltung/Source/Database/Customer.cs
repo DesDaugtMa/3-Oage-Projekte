@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Lagerverwaltung.Database
 {
@@ -18,5 +19,17 @@ namespace Lagerverwaltung.Database
         public string? Company { get; set; }
 
         public ICollection<Sale> Sales { get; set; }
+
+        [NotMapped]
+        public string FullInformation
+        { 
+            get
+            {
+                if (!String.IsNullOrEmpty(this.Company))
+                    return this.Firstname + " " + this.Lastname + ", " + this.Company;
+                else
+                    return this.Firstname + " " + this.Lastname;
+            }
+        }
     }
 }

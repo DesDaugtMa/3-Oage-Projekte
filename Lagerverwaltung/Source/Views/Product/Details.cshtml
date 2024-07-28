@@ -40,7 +40,7 @@
 <div class="row">
     <div class="col-sm-6">
         <h3>Verkäufe</h3>
-        <a asp-controller="Sale" asp-action="Create" asp-route-productid="@Model.Id" class="btn btn-success">Verkauf hinzufügen</a>
+        <a asp-controller="Sale" asp-action="Create" asp-route-productid="@Model.Id" asp-route-returnToProductDetails="true" class="btn btn-success">Verkauf hinzufügen</a>
 
         <table class="table">
             <thead>
